@@ -1,0 +1,262 @@
+[gd_scene load_steps=26 format=3 uid="uid://bg2x84trhd8qo"]
+
+[ext_resource type="Script" path="res://TemperatureControllerBehaviour.gd" id="1_d4gw3"]
+[ext_resource type="Script" path="res://WebSocketControllerBehaviour.gd" id="1_jxeoy"]
+[ext_resource type="Texture2D" uid="uid://cr4a85e4f2xvv" path="res://sprites/bubbles/Coloured/16x16/bubble_1.png" id="2_6r0mx"]
+[ext_resource type="Texture2D" uid="uid://df5v5x0v743lo" path="res://sprites/kettle_back.png" id="3_2e3wo"]
+[ext_resource type="Texture2D" uid="uid://dwwa767wol1lg" path="res://sprites/kettle_water.png" id="4_wbci5"]
+[ext_resource type="Texture2D" uid="uid://cj3cqynviybjd" path="res://sprites/kettle_element.png" id="6_hpuvu"]
+[ext_resource type="Texture2D" uid="uid://c3dvod4sujqwb" path="res://sprites/bubbles/Coloured/64x64/bubble_4.png" id="6_lvyqk"]
+[ext_resource type="Texture2D" uid="uid://35l3i7if6irt" path="res://sprites/kettle_outline.png" id="6_sxebg"]
+
+[sub_resource type="Animation" id="Animation_smr3s"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Kettle/KettleElement:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_3cli5"]
+resource_name = "heating"
+length = 120.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Kettle/WaterTexture:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.4, 20.3, 50.3, 89.7, 102.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Color(0.592157, 0.823529, 0.988235, 1), Color(0.270588, 0.686275, 1, 1), Color(0.321569, 0, 0.741176, 1), Color(0.470588, 0.207843, 0.756863, 1), Color(1, 0.2, 0.2, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Kettle/KettleElement:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 44, 103.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(0.180392, 0.172549, 0.133333, 1), Color(0.258824, 0.117647, 0.117647, 1), Color(0.54902, 0.14902, 0.14902, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_i1oeh"]
+_data = {
+"RESET": SubResource("Animation_smr3s"),
+"heating": SubResource("Animation_3cli5")
+}
+
+[sub_resource type="Theme" id="Theme_ll4ik"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_geuqb"]
+bg_color = Color(0, 0.713726, 0.407843, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pdep3"]
+bg_color = Color(0.556863, 1, 0.584314, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1mjp3"]
+bg_color = Color(0.092, 0.2, 0.1244, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_apal1"]
+bg_color = Color(0.913725, 0.419608, 0.466667, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fyp1o"]
+bg_color = Color(0.956863, 0.639216, 0.733333, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p032p"]
+bg_color = Color(0.18, 0.08937, 0.0846, 1)
+
+[sub_resource type="Gradient" id="Gradient_08bbx"]
+offsets = PackedFloat32Array(0.0141844, 0.154255, 0.496454, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_gc65p"]
+gradient = SubResource("Gradient_08bbx")
+
+[sub_resource type="Curve" id="Curve_7bdqx"]
+_data = [Vector2(0, 0.485497), 0.0, 2.2096, 0, 0, Vector2(0.466238, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -4.02444, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_o16sf"]
+curve = SubResource("Curve_7bdqx")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_tioui"]
+particle_flag_disable_z = true
+emission_shape_scale = Vector3(1, 2, 1)
+emission_shape = 3
+emission_box_extents = Vector3(150, 50, 0)
+direction = Vector3(-1, 0, 0)
+gravity = Vector3(0, -300, 0)
+linear_accel_min = 8.48
+linear_accel_max = 68.28
+scale_min = 2.0
+scale_max = 3.0
+scale_curve = SubResource("CurveTexture_o16sf")
+color_ramp = SubResource("GradientTexture1D_gc65p")
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_873xf"]
+diffuse_texture = ExtResource("2_6r0mx")
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_oydl1"]
+
+[node name="Node2D" type="Node2D"]
+position = Vector2(-2, -1)
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_right = 828.0
+offset_bottom = 997.0
+expand_mode = 2
+stretch_mode = 2
+
+[node name="WebSocketController" type="Node" parent="." node_paths=PackedStringArray("command_listener")]
+script = ExtResource("1_jxeoy")
+command_listener = NodePath("../TemperatureController")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_i1oeh")
+}
+
+[node name="TemperatureController" type="Node" parent="." node_paths=PackedStringArray("onButton", "offButton", "heatReadout", "water_animation_player", "heating_particules", "commands_readout")]
+script = ExtResource("1_d4gw3")
+onButton = NodePath("../GUI/HBoxContainer/VBoxContainer/On Button")
+offButton = NodePath("../GUI/HBoxContainer/VBoxContainer/Off Button")
+heatReadout = NodePath("../RichTextLabel")
+water_animation_player = NodePath("../AnimationPlayer")
+heating_particules = NodePath("../Kettle/WaterTexture/BoilingParticles")
+commands_readout = NodePath("../GUI/HBoxContainer/VBoxContainer2/CommandsReadout")
+
+[node name="GUI" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(100, 100)
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 802.0
+offset_right = 1000.0
+offset_bottom = 1000.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GUI"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 6.53
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUI/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.54
+
+[node name="On Button" type="Button" parent="GUI/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = SubResource("Theme_ll4ik")
+theme_override_colors/icon_normal_color = Color(0, 0.666667, 0, 1)
+theme_override_font_sizes/font_size = 38
+theme_override_styles/normal = SubResource("StyleBoxFlat_geuqb")
+theme_override_styles/hover = SubResource("StyleBoxFlat_pdep3")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_1mjp3")
+text = "ON"
+
+[node name="Off Button" type="Button" parent="GUI/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 38
+theme_override_styles/normal = SubResource("StyleBoxFlat_apal1")
+theme_override_styles/hover = SubResource("StyleBoxFlat_fyp1o")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_p032p")
+disabled = true
+text = "OFF"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="GUI/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CommandsReadout" type="TextEdit" parent="GUI/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 28
+placeholder_text = "...."
+editable = false
+context_menu_enabled = false
+shortcut_keys_enabled = false
+selecting_enabled = false
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
+virtual_keyboard_enabled = false
+middle_mouse_paste_enabled = false
+
+[node name="Kettle" type="Node2D" parent="."]
+position = Vector2(464, 790)
+metadata/_edit_group_ = true
+
+[node name="KettleBackground" type="Sprite2D" parent="Kettle"]
+position = Vector2(71, -376)
+texture = ExtResource("3_2e3wo")
+
+[node name="WaterTexture" type="Sprite2D" parent="Kettle"]
+self_modulate = Color(0.592157, 0.823529, 0.988235, 1)
+position = Vector2(75, -371)
+scale = Vector2(1.039, 1)
+texture = ExtResource("4_wbci5")
+
+[node name="BoilingParticles" type="GPUParticles2D" parent="Kettle/WaterTexture"]
+position = Vector2(-58.7103, 205)
+amount = 50
+amount_ratio = 0.0
+process_material = SubResource("ParticleProcessMaterial_tioui")
+texture = SubResource("CanvasTexture_873xf")
+preprocess = 107.43
+fixed_fps = 0
+draw_order = 0
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="Kettle/WaterTexture"]
+visible = false
+material = SubResource("CanvasItemMaterial_oydl1")
+position = Vector2(-57.7478, 234)
+amount = 100
+texture = ExtResource("6_lvyqk")
+lifetime = 27.2
+
+[node name="KettleElement" type="Sprite2D" parent="Kettle"]
+position = Vector2(30, -101)
+texture = ExtResource("6_hpuvu")
+
+[node name="KettleOverlay" type="Sprite2D" parent="Kettle"]
+position = Vector2(76, -377)
+scale = Vector2(1.039, 1)
+texture = ExtResource("6_sxebg")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+offset_left = 618.0
+offset_top = 4.0
+offset_right = 1004.0
+offset_bottom = 168.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.25
+theme_override_colors/default_color = Color(0, 0, 0, 0.592157)
+theme_override_font_sizes/normal_font_size = 100
+bbcode_enabled = true
+text = "-100DD
+"

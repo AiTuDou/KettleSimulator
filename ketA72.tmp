@@ -1,0 +1,161 @@
+[gd_scene load_steps=17 format=3 uid="uid://bg2x84trhd8qo"]
+
+[ext_resource type="Script" path="res://Temperature Controller.gd" id="1_d4gw3"]
+[ext_resource type="Script" path="res://WebSocket Controller.gd" id="1_jxeoy"]
+[ext_resource type="Texture2D" uid="uid://cr4a85e4f2xvv" path="res://sprites/bubbles/Coloured/16x16/bubble_1.png" id="2_6r0mx"]
+
+[sub_resource type="Animation" id="Animation_3cli5"]
+resource_name = "heating"
+length = 120.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WaterTexture:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(-0.7, 23.5, 89.7, 102.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Color(0.270588, 0.686275, 1, 1), Color(0, 0.737255, 0.533333, 1), Color(0.470588, 0.207843, 0.756863, 1), Color(1, 0.2, 0.2, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_i1oeh"]
+_data = {
+"heating": SubResource("Animation_3cli5")
+}
+
+[sub_resource type="Theme" id="Theme_ll4ik"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_geuqb"]
+bg_color = Color(0, 0.713726, 0.407843, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pdep3"]
+bg_color = Color(0.556863, 1, 0.584314, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1mjp3"]
+bg_color = Color(0.092, 0.2, 0.1244, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_apal1"]
+bg_color = Color(0.913725, 0.419608, 0.466667, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fyp1o"]
+bg_color = Color(0.956863, 0.639216, 0.733333, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p032p"]
+bg_color = Color(0.18, 0.08937, 0.0846, 1)
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_nd0ls"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_873xf"]
+diffuse_texture = ExtResource("2_6r0mx")
+
+[sub_resource type="Curve" id="Curve_7bdqx"]
+_data = [Vector2(0, 0.485497), 0.0, 2.2096, 0, 0, Vector2(0.466238, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -4.02444, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_08bbx"]
+offsets = PackedFloat32Array(0.0141844, 0.154255, 0.496454, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
+
+[node name="Node2D" type="Node2D"]
+position = Vector2(-2, -1)
+
+[node name="WebSocket Controller" type="Node" parent="."]
+script = ExtResource("1_jxeoy")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_i1oeh")
+}
+
+[node name="Temperature Controller" type="Node" parent="." node_paths=PackedStringArray("onButton", "offButton", "heatReadout", "water_animation_player")]
+script = ExtResource("1_d4gw3")
+onButton = NodePath("../GUI/VBoxContainer/HBoxContainer/On Button")
+offButton = NodePath("../GUI/VBoxContainer/HBoxContainer/Off Button")
+heatReadout = NodePath("../GUI/VBoxContainer/HBoxContainer2/RichTextLabel")
+water_animation_player = NodePath("../AnimationPlayer")
+
+[node name="GUI" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(100, 100)
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = 475.0
+offset_right = 496.0
+offset_bottom = 657.0
+grow_vertical = 0
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUI"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GUI/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="On Button" type="Button" parent="GUI/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = SubResource("Theme_ll4ik")
+theme_override_colors/icon_normal_color = Color(0, 0.666667, 0, 1)
+theme_override_font_sizes/font_size = 38
+theme_override_styles/normal = SubResource("StyleBoxFlat_geuqb")
+theme_override_styles/hover = SubResource("StyleBoxFlat_pdep3")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_1mjp3")
+text = "ON"
+
+[node name="Off Button" type="Button" parent="GUI/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 38
+theme_override_styles/normal = SubResource("StyleBoxFlat_apal1")
+theme_override_styles/hover = SubResource("StyleBoxFlat_fyp1o")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_p032p")
+disabled = true
+text = "OFF"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="GUI/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TextEdit" type="TextEdit" parent="GUI/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Status"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="GUI/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.25
+theme_override_font_sizes/normal_font_size = 38
+bbcode_enabled = true
+text = "-1
+"
+
+[node name="WaterTexture" type="Sprite2D" parent="."]
+self_modulate = Color(0.262761, 0.68775, 0.986501, 1)
+position = Vector2(253, 198.75)
+scale = Vector2(414, 398.5)
+texture = SubResource("CanvasTexture_nd0ls")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="WaterTexture"]
+position = Vector2(0.0217391, 0.211418)
+amount = 20
+texture = SubResource("CanvasTexture_873xf")
+emission_shape = 3
+emission_rect_extents = Vector2(0.42, 0.2)
+direction = Vector2(-1, 0)
+gravity = Vector2(0, -200)
+linear_accel_min = 8.48
+linear_accel_max = 46.27
+scale_amount_min = 2.0
+scale_amount_max = 3.0
+scale_amount_curve = SubResource("Curve_7bdqx")
+color_ramp = SubResource("Gradient_08bbx")
